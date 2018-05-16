@@ -28,4 +28,4 @@ However, we decided on making __add()__ *O(n)* and __peekMin()__ and __remove()_
 <br> <br>
 This is where writing __peekMin()__ as *O(1)* makes a difference. It would optimize peeking during the instance of a PriorityQueue.
 
-###### <center> ------------------------------------------------------------------------ </center>
+###### <p align="justify"> ------------------------------------------------------------------------ </p>
