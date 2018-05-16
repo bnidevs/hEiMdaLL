@@ -27,3 +27,5 @@ The API states that __add()__ is an *O(1)* runtime method, and __peekMin()__ and
 However, we decided on making __add()__ *O(n)* and __peekMin()__ and __remove()__ *O(1)*. This is because the use of a queue often necessitates removing all the elements that the user(s) has added. So if we switch __add()__ and __remove()__ in terms of runtimes, it would make no difference. But __peekMin()__ has to be used at least once in an instance of a PriorityQueue, otherwise there would be no point in writing the method.
 <br> <br>
 This is where writing __peekMin()__ as *O(1)* makes a difference. It would optimize peeking during the instance of a PriorityQueue.
+
+###### <center> ------------------------------------------------------------------------ </center>
