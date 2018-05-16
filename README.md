@@ -29,3 +29,20 @@ However, we decided on making __add()__ *O(n)* and __peekMin()__ and __remove()_
 This is where writing __peekMin()__ as *O(1)* makes a difference. It would optimize peeking during the instance of a PriorityQueue.
 
 ###### <p align="center"> ------------------------------------------------------------------------ </p>
+
+## Heap To-Do
+
+Constructor - creates empty Heap
+<br> <br>
+toString() - converts Heap object into String
+<br> <br>
+isEmpty() - returns true if Heap holds no elements, false otherwise
+<br> <br>
+peekMin() - returns smallest element
+<br> <br>
+add() - adds an element, while retaining Heap property
+<br> <br>
+removeMin() - removes smallest element
+<br> <br>
+minChildPos() - returns position of smallest element
+<br> <br>
