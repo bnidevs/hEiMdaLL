@@ -1,8 +1,3 @@
-// Team hEiMdaLL -- Tania Cao, Frank Chen, Bill Ni
-// APCS2 pd2
-// HW48 -- Heap o'Trouble
-// 2018-05-13
-
 /*****************************************************
  * class ALHeap
  * SKELETON
@@ -30,7 +25,7 @@ public class ALHeap {
      * b) ASCII representation of the tree (more complicated, more fun)
      *****************************************************/
     public String toString() { 
-		return _heap.toString();
+	return _heap.toString();
     } // O(1)
 
     /*****************************************************
@@ -49,7 +44,7 @@ public class ALHeap {
     public Integer peekMin() { 
 	int min = -10000;
 	for (int x : _heap)
-	    if( x < min )
+	    if (x < min)
 		min = x;
 	if (min == -10000)
 	    return null;
@@ -61,12 +56,15 @@ public class ALHeap {
      * add(Integer) 
      * Inserts an element in the heap
      * Postcondition: Tree exhibits heap property.
+     * Algorithm: Traverse through _heap. If addVal is smaller than the element in
+     *            current index, add addVal to current index. If not, add addVal
+     *            to the end of _heap.
      *****************************************************/
     public void add (Integer addVal) {
 	for (int i = 0; i <_heap.size(); i++)
-	    if( addVal < _heap.get(i)) {
-		    _heap.add(i, addVal);
-		    return;
+	    if (addVal < _heap.get(i)) {
+		_heap.add(i, addVal);
+		return;
 	    }
     	_heap.add(addVal);
     } // O(n)
@@ -75,6 +73,11 @@ public class ALHeap {
      * removeMin()  ---  means of removing an element from heap
      * Removes and returns least element in heap.
      * Postcondition: Tree maintains heap property.
+     * Algorithm: If _peak is empty, return null.
+     *            Otherwise, traverse through _heap. If the smallest element in heap
+     *            equals the element in the current index, remove the element in the
+     *            current index and return the value of the smallest element. If not,
+     *            return null.
      *****************************************************/
     public Integer removeMin() { 
 	if (peekMin() == null)
