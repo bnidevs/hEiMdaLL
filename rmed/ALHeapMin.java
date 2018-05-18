@@ -1,255 +1,163 @@
-// Team hEiMdaLL -- Tania Cao, Frank Chen, Bill Ni
-// APCS2 pd2
-// HW49 -- Sink || Swim
-// 2018-05-15
-
 /*****************************************************
- * class ALHeap
- * SKELETON
+ * class ALHeapMin
  * Implements a min heap using an ArrayList as underlying container
  *****************************************************/
 
 import java.util.ArrayList;
 
-public class ALHeapMin
-{
+public class ALHeapMin {
 
-  //instance vars
-  public ArrayList<Integer> _heap; 
+    // instance vars
+    private ArrayList<Integer> _heap; 
 
-  /*****************************************************
-   * default constructor  ---  inits empty heap
-   *****************************************************/
-  public ALHeapMin() 
-  {
-	_heap = new ArrayList<Integer>();      
-  }
+    /*****************************************************
+     * default constructor  ---  inits empty heap
+     *****************************************************/
+    public ALHeapMin() { 
+	_heap = new ArrayList<Integer>();
+    }
+    
+    /*****************************************************
+     * toString()  ---  overrides inherited method
+     * Returns either 
+     * a) a level-order traversal of the tree (simple version)
+     * b) ASCII representation of the tree (more complicated, more fun)
+     *****************************************************/
+    public String toString() { 
+	return _heap.toString();
+    } // O(1)
 
+    /*****************************************************
+     * boolean isEmpty()
+     * Returns true if no meaningful elements in heap, false otherwise
+     *****************************************************/
+    public boolean isEmpty() { 
+	return _heap.size() == 0;
+    } // O(1)
 
-
-  /*****************************************************
-   * toString()  ---  overrides inherited method
-   * Returns either 
-   * a) a level-order traversal of the tree (simple version)
-   * b) ASCII representation of the tree (more complicated, more fun)
-   *****************************************************/
-  public String toString() 
-  {
-	//simple version:
-	//return _heap.toString(); 
-
-	//prettier version:
-	String lvlOrdTrav = "heap size " + _heap.size() + "\n";
-
-	if ( _heap.size() == 0 ) return lvlOrdTrav;
-
-	int h = 1; //init height to 1
-	for( int i = 0; i < _heap.size(); i++ ) {
-	    lvlOrdTrav += i + ":" + _heap.get(i) + " ";
-	    if ( i >= Math.pow(2,h) - 2 ) {
-		lvlOrdTrav += "\n";
-		h++;
+    /*****************************************************
+     * Integer peekMin()
+     * Returns min value in heap
+     * Postcondition: Heap remains unchanged.
+     *****************************************************/
+    public Integer peekMin() { 
+	if (isEmpty()) return null;
+	return _heap.get(0);
+    } // O(1)
+    
+    /*****************************************************
+     * add(Integer) 
+     * Inserts an element in the heap
+     * Postcondition: Tree exhibits heap property.
+     *****************************************************/
+    public void add (Integer addVal) {
+	_heap.add(addVal);
+	if (_heap.size() != 1) {
+	    int n = _heap.size() - 1;
+	    for (int r = (n - 1) / 2; addVal < _heap.get(r); r = (r - 1) / 2) {
+		swap(n,r);
+		n = r;
 	    }
 	}
-	return lvlOrdTrav;
-    }//O(n)
-
-
-  /*****************************************************
-   * boolean isEmpty()
-   * Returns true if no meaningful elements in heap, false otherwise
-   *****************************************************/
-  public boolean isEmpty() { return _heap.isEmpty(); } //O(1)
-
-
-  /*****************************************************
-   * Integer peekMin()
-   * Returns min value in heap
-   * Postcondition: Heap remains unchanged.
-   *****************************************************/
-  public Integer peekMin()
-  { 
- 	if ( _heap.size() < 1 )
+    } // O(n)
+	
+    /*****************************************************
+     * removeMin()  ---  means of removing an element from heap
+     * Removes and returns least element in heap.
+     * Postcondition: Tree maintains heap property.
+     *****************************************************/
+    public Integer removeMin() { 
+	if (_heap.size() == 0)
 	    return null;
-	else
-	    return _heap.get(0); 
-    } //O(1)
-
-
-  /*****************************************************
-   * add(Integer) 
-   * Inserts an element in the heap
-   * Postcondition: Tree exhibits heap property.
-   *****************************************************/
-  public void add( Integer addVal )
-  { 
-
-	//Add value as last node, to maintain balance, completeness of tree
-	_heap.add( addVal );
-
-	int addValPos = _heap.size() - 1;
-	int parentPos;
-
-	while( addValPos > 0 ) { //potentially swap until reach root
-
-	    //pinpoint parent
-	    parentPos = (addValPos-1) / 2;
-
-	    if ( addVal.compareTo(_heap.get(parentPos)) < 0 ) {//addVal < parent
-		swap( addValPos, parentPos );
-		addValPos = parentPos;
-	    }
-	    else 
-		break;
+	int min = peekMin();
+	swap(0,_heap.size()-1);
+	_heap.remove(_heap.size()-1);
+	int minChildPos = -1;
+	for (int root = 0; minChildPos(root) != -1; root = minChildPos) {
+	    minChildPos = minChildPos(root);
+	    swap(root,minChildPos);
 	}
-    } //O(logn)
+	return min;
+    } // O(n)
 
-
-  /*****************************************************
-   * removeMin()  ---  means of removing an element from heap
-   * Removes and returns least element in heap.
-   * Postcondition: Tree maintains heap property.
-   *****************************************************/
-  public Integer removeMin()
-  { 
-  	if ( _heap.size() == 0 ) 
-	    return null;
-
-	//store root value for return at end of fxn
-	Integer retVal = peekMin();
-
-	//store val about to be swapped into root
-	Integer foo = _heap.get( _heap.size() - 1);
-
-	//swap last (rightmost, deepest) leaf with root
-	swap( 0, _heap.size() - 1 );
-
-	//lop off last leaf
-	_heap.remove( _heap.size() - 1);
-
-	// walk the now-out-of-place root node down the tree...
-	int pos = 0;
-	int minChildPos;
-
-	while( pos < _heap.size() ) {
-
-	    //choose child w/ min value, or check for child
-	    minChildPos = minChildPos(pos);
-
-	    //if no children, then i've walked far enough
-	    if ( minChildPos == -1 ) 
-		break;
-	    //if i am less than my least child, then i've walked far enough
-	    else if ( foo.compareTo( _heap.get(minChildPos) ) <= 0 ) 
-		break;
-	    //if i am > least child, swap with that child
-	    else {
-		swap( pos, minChildPos );
-		pos = minChildPos;
-	    }
-	}
-	//return removed value
-	return retVal;
-    }//O(logn)
-
-
-  /*****************************************************
-   * minChildPos(int)  ---  helper fxn for removeMin()
-   * Returns index of least child, or 
-   * -1 if no children, or if input pos is not in ArrayList
-   * Postcondition: Tree unchanged
-   *****************************************************/
-  private int minChildPos( int pos )
-  { 
-  	int retVal;
-	int lc = 2*pos + 1; //index of left child
-	int rc = 2*pos + 2; //index of right child
-
-	//pos is not in the heap or pos is a leaf position
-	if ( pos < 0 || pos >= _heap.size() || lc >= _heap.size() )
-	    retVal = -1;
-	//if no right child, then left child is only option for min
-	else if ( rc >= _heap.size() )
-	    retVal = lc;
-	//have 2 children, so compare to find least 
-	else if ( _heap.get(lc).compareTo(_heap.get(rc)) < 0 )
-	    retVal = lc;
-	else
-	    retVal = rc;
-	return retVal;
-    }//O(1)
-
+    /*****************************************************
+     * minChildPos(int)  ---  helper fxn for removeMin()
+     * Returns index of least child, or 
+     * -1 if no children, or if input pos is not in ArrayList
+     * Postcondition: Tree unchanged
+     *****************************************************/
+    private int minChildPos (int pos) { 
+	if (_heap.size() == 1)
+	    return -1;
+	int r = 2 * pos + 1;
+	int l = 2 * pos + 2;
+	if (r > _heap.size() - 1 || l > _heap.size() - 1)
+	    return -1;
+	if (_heap.get(r) == minOf(_heap.get(r),_heap.get(l)))
+	    return r;
+	return l;
+    } // O(n)
   
-
-  //************ aux helper fxns ***************
-  private Integer minOf( Integer a, Integer b )
-  {
-    if ( a.compareTo(b) < 0 )
+    //************ aux helper fxns ***************
+    private Integer minOf (Integer a, Integer b) {
+	if (a.compareTo(b) < 0)
 	    return a;
-    else
+	else
 	    return b;
-  }
+    }
 
-  //swap for an ArrayList
-  private void swap( int pos1, int pos2 )
-  {
-    _heap.set( pos1, _heap.set( pos2, _heap.get(pos1) ) );	
-  }
- 
-  //********************************************
+    // swap for an ArrayList
+    private void swap (int pos1, int pos2) {
+	_heap.set(pos1, _heap.set(pos2, _heap.get(pos1)));
+    }
+    //********************************************
 
+    // main method for testing
+    public static void main (String[] args) {
+	ALHeap pile = new ALHeap();
 
+	pile.add(2);
+	System.out.println(pile);
+	pile.add(4);
+	System.out.println(pile);
+	pile.add(6);
+	System.out.println(pile);
+	pile.add(8);
+	System.out.println(pile);
+	pile.add(10);
+	System.out.println(pile);
+	pile.add(1);
+	System.out.println(pile);
+	pile.add(3);
+	System.out.println(pile);
+	pile.add(5);
+	System.out.println(pile);
+	pile.add(7);
+	System.out.println(pile);
+	pile.add(9);
+	System.out.println(pile);
 
-  //main method for testing
-  public static void main( String[] args )
-  {
-      ALHeapMin pile = new ALHeapMin();
-
-      pile.add(2);
-      System.out.println(pile);
-      pile.add(4);
-      System.out.println(pile);
-      pile.add(6);
-      System.out.println(pile);
-      pile.add(8);
-      System.out.println(pile);
-      pile.add(10);
-      System.out.println(pile);
-      pile.add(1);
-      System.out.println(pile);
-      pile.add(3);
-      System.out.println(pile);
-      pile.add(5);
-      System.out.println(pile);
-      pile.add(7);
-      System.out.println(pile);
-      pile.add(9);
-      System.out.println(pile);
-
-      System.out.println("removing " + pile.removeMin() + "...");
-      System.out.println(pile);
-      System.out.println("removing " + pile.removeMin() + "...");
-      System.out.println(pile);
-      System.out.println("removing " + pile.removeMin() + "...");
-      System.out.println(pile);
-      System.out.println("removing " + pile.removeMin() + "...");
-      System.out.println(pile);
-      System.out.println("removing " + pile.removeMin() + "...");
-      System.out.println(pile);
-      System.out.println("removing " + pile.removeMin() + "...");
-      System.out.println(pile);
-      System.out.println("removing " + pile.removeMin() + "...");
-      System.out.println(pile);
-      System.out.println("removing " + pile.removeMin() + "...");
-      System.out.println(pile);
-      System.out.println("removing " + pile.removeMin() + "...");
-      System.out.println(pile);
-      System.out.println("removing " + pile.removeMin() + "...");
-      System.out.println(pile);
-      System.out.println("removing " + pile.removeMin() + "...");
-      System.out.println(pile);
-    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-  }//end main()
-
-}//end class ALHeap
+	System.out.println("removing " + pile.removeMin() + "...");
+	System.out.println(pile);
+	System.out.println("removing " + pile.removeMin() + "...");
+	System.out.println(pile);
+	System.out.println("removing " + pile.removeMin() + "...");
+	System.out.println(pile);
+	System.out.println("removing " + pile.removeMin() + "...");
+	System.out.println(pile);
+	System.out.println("removing " + pile.removeMin() + "...");
+	System.out.println(pile);
+	System.out.println("removing " + pile.removeMin() + "...");
+	System.out.println(pile);
+	System.out.println("removing " + pile.removeMin() + "...");
+	System.out.println(pile);
+	System.out.println("removing " + pile.removeMin() + "...");
+	System.out.println(pile);
+	System.out.println("removing " + pile.removeMin() + "...");
+	System.out.println(pile);
+	System.out.println("removing " + pile.removeMin() + "...");
+	System.out.println(pile);
+	System.out.println("removing " + pile.removeMin() + "...");
+	System.out.println(pile);
+    } // end main()
+} // end class ALHeapMin
