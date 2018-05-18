@@ -42,53 +42,58 @@ public class ALHeap {
      * Postcondition: Heap remains unchanged.
      *****************************************************/
     public Integer peekMin() { 
-	int min = -10000;
-	for (int x : _heap)
-	    if (x < min)
-		min = x;
-	if (min == -10000)
-	    return null;
-	else
-	    return min;
+	if (isEmpty()) return null;
+	return _heap.get(0);
     } // O(1)
     
     /*****************************************************
      * add(Integer) 
      * Inserts an element in the heap
      * Postcondition: Tree exhibits heap property.
-     * Algorithm: Traverse through _heap. If addVal is smaller than the element in
-     *            current index, add addVal to current index. If not, add addVal
-     *            to the end of _heap.
+     * Algorithm: Add addVal to the end of _heap. If addVal is not the only
+     *            element in _heap, swap addVal with it's parent if addVal
+     *            is less than it's parent's value.
      *****************************************************/
     public void add (Integer addVal) {
-	for (int i = 0; i <_heap.size(); i++)
-	    if (addVal < _heap.get(i)) {
-		_heap.add(i, addVal);
-		return;
-	    }
-    	_heap.add(addVal);
+	_heap.add(addVal);
+	if (_heap.size() != 1) {
+	    int n = _heap.size() - 1;
+	    if (n % 2 == 1)
+		for (int r = (n - 1) / 2; addVal < _heap.get(r); r = (r - 1) / 2) {
+		    swap(n,r);
+		    n = r;
+		}
+	    else 
+		for (int l = (n - 2) / 2; addVal < _heap.get(l); l = (l - 2) / 2) {
+		    swap(n,l);
+		    n = l;
+		}
+	}
     } // O(n)
-
+    
     /*****************************************************
      * removeMin()  ---  means of removing an element from heap
      * Removes and returns least element in heap.
      * Postcondition: Tree maintains heap property.
-     * Algorithm: If _peak is empty, return null.
-     *            Otherwise, traverse through _heap. If the smallest element in heap
-     *            equals the element in the current index, remove the element in the
-     *            current index and return the value of the smallest element. If not,
-     *            return null.
+     * Algorithm: If _peak is empty, return null. Otherwise, swap the first
+     *            element (minVal) with the last element. Remove the last
+     *            element (minVal). Set root as the first element. If root
+     *            has children, swap root with the child that has the min
+     *            value. Update root as the index of the min value found in
+     *            previous step. Repeat until root has no children.
      *****************************************************/
     public Integer removeMin() { 
 	if (peekMin() == null)
 	    return null;
 	int min = peekMin();
-	for (int i = 0; i < _heap.size(); i++)
-	    if (_heap.get(i) == min) {
-		_heap.remove(min);
-		return min;
-	    }
-    	return null;
+	swap(0,_heap.size()-1);
+	_heap.remove(_heap.size()-1);
+	int minChildPos = -1;
+	for (int root = 0; minChildPos(root) != -1; root = minChildPos) {
+	    minChildPos = minChildPos(root);
+	    swap(root,minChildPos);
+	}
+	return min;
     } // O(n)
 
     /*****************************************************
@@ -98,13 +103,15 @@ public class ALHeap {
      * Postcondition: Tree unchanged
      *****************************************************/
     private int minChildPos (int pos) { 
-	int min = peekMin();
-	if (peekMin() == null)
+	if (_heap.size() == 1)
 	    return -1;
-	for (int i = 0; i < _heap.size(); i++)
-	    if (_heap.get(i) == min)
-		return i;
-    	return -1;
+	int r = 2 * pos + 1;
+	int l = 2 * pos + 2;
+	if (r > _heap.size() - 1 || l > _heap.size() - 1)
+	    return -1;
+	if (_heap.get(r) == minOf(_heap.get(r),_heap.get(l)))
+	    return r;
+	return l;
     } // O(n)
   
     //************ aux helper fxns ***************
