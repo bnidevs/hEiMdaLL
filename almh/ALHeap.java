@@ -1,6 +1,5 @@
 /*****************************************************
  * class ALHeap
- * SKELETON
  * Implements a min heap using an ArrayList as underlying container
  *****************************************************/
 
@@ -58,16 +57,10 @@ public class ALHeap {
 	_heap.add(addVal);
 	if (_heap.size() != 1) {
 	    int n = _heap.size() - 1;
-	    if (n % 2 == 1)
-		for (int r = (n - 1) / 2; addVal < _heap.get(r); r = (r - 1) / 2) {
-		    swap(n,r);
-		    n = r;
-		}
-	    else 
-		for (int l = (n - 2) / 2; addVal < _heap.get(l); l = (l - 2) / 2) {
-		    swap(n,l);
-		    n = l;
-		}
+	    for (int r = (n - 1) / 2; addVal < _heap.get(r); r = (r - 1) / 2) {
+		swap(n,r);
+		n = r;
+	    }
 	}
     } // O(n)
     
@@ -83,7 +76,7 @@ public class ALHeap {
      *            previous step. Repeat until root has no children.
      *****************************************************/
     public Integer removeMin() { 
-	if (peekMin() == null)
+	if (_heap.size() == 0)
 	    return null;
 	int min = peekMin();
 	swap(0,_heap.size()-1);
